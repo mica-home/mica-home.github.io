@@ -67,3 +67,5 @@ block-diagram renders.
   official user manual (English rewrite, sanitized); every technical enumeration they make —
   instrument families, models, modes, config keys, INI keys, file format — was verified against
   the repository sources, and conflicts are annotated in the user manual.
+- This site auto-publishes: changes pushed to the `docs` branch are deployed here by CI
+  (see `.gitea/workflows/docs.yml` in the repository).
