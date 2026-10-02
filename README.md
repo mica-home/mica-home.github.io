@@ -11,6 +11,7 @@ root. This directory is the documentation set for that application.
 | [architecture.md](architecture.md) | System-level architecture: Actor Framework topology and message conventions, the module map, the measurement data flow, the startup chain with its launcher variants, build artifacts, and error handling and logging. |
 | [getting-started.md](getting-started.md) | Installation-to-first-measurement guide: prerequisites, install, first launch in Simulation mode, and where data lands. |
 | [user-manual.md](user-manual.md) | Full operator reference: UI tour, the four measurement modes, channel-configuration reference with code-adjudicated instrument tables, worked examples, data files, logs and troubleshooting, maintenance and update, notes and limitations. |
+| [testing.md](testing.md) | How to write tests for MICA: LUnit naming and directory conventions, the CI invocation form with its exit-code and report-freshness traps, Raw/Sim smoke assertion semantics, self-contained fixture rules with the measured config keys, CI blocking semantics, and the batch expansion gate. |
 
 ### Modules
 
