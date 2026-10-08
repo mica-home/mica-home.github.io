@@ -78,8 +78,10 @@ table with sources, output paths, ini bindings and version fields lives in
 
 ## ci — continuous integration
 
-The repository's `ci/` directory currently holds a single environment-definition file (`ci/vm.env`);
-no pipeline definitions are tracked there, and CI as such is out of scope for this documentation pass.
+The repository's `ci/` directory now holds only the build and release tooling that assembles the
+Windows deliverables; no pipeline definitions are tracked there. The CI and runner operations
+manuals (`ci.md`, `vm-runner.md`) together with the runner provisioning kit have moved to the
+separate LabVIEW-CI repository, so CI as such remains out of scope for this documentation pass.
 
 ## Notes for readers
 
