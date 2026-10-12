@@ -132,9 +132,55 @@ loudly instead of silently passing.
 - Verdicts come from the JUnit XML as described in section 2; the XML is echoed into the
   job log, which is the permanent record (no artifact upload).
 
-## 6. Batch expansion gate
+## 6. Batch expansion status
 
-These conventions come from the two-family pilot. Rolling suites out to the remaining
-driver families — and to the utility, cores and UI layers — is gated on two conditions:
-the pilot suites fully green in CI, and the owner's review of the pilot test quality.
-Until that gate passes, new family suites are out of scope.
+These conventions come from the two-family pilot and were validated across the full
+batch: all 30 remaining implementation families now carry suites (32 LUnit channels
+plus the UTF suites, all green locally and in CI). Rolling suites out to the utility,
+cores and UI layers remains gated on a separate owner decision.
+
+## 7. Batch authoring route (measured, 2026-10-11)
+
+The 30 batch suites were authored through one pipeline. Its steps and the traps they
+surfaced are the reference for any future suite authoring:
+
+1. Recon the family chain first (members, parse keys, the measured invalid-JSON error
+   code, Sim feasibility) — never copy another family's expectations without measuring.
+2. Author the test-method AIXML sources with placeholder stub calls; keep every
+   assertion chained on the LUnit Test Case accumulator line.
+3. Create the test class, then restart LabVIEW once (class-creation lock). Watch for
+   the measured `lvai_create_class` defect that can duplicate every class entry in
+   `Lab_Super.lvproj` (Error 74 on the next project open) — verify the LVClass count
+   right after and restore the file if it doubled.
+4. Generate members. The MCP add-method call reliably hits a 30-second client cap after
+   its first phase and can then spin; the working completion is the shipped
+   `lvlu_add_test_method.vi` helper run directly (per-stage error indicators must all
+   be zero, terminals retyped = 2).
+5. Swap stubs for real members one call per node, and re-point the seed constant at the
+   SUBJECT class — not the test class. Two silent-failure traps: swapping the init
+   socket to the wrong VI drops the config wires while every swap answer stays green,
+   and a wrong seed class leaves the dynamic parse falling back to BaseDriver; the
+   dynamic-resolution export check is only meaningful after the seed swap.
+6. Re-apply icons after any regeneration; assert every member executable; then prove
+   the suite with three local runs: GREEN, a fixture-mutation negative control (must
+   go RED with exit 3), and the restored GREEN.
+7. Register the family in `ci/run-tests.ps1` and commit one family per commit.
+
+## 8. Early abort
+
+The lane supports `MICA_TEST_EARLY_ABORT=1` (set by the workflow) or a local
+`-EarlyAbort` switch: after the first infrastructure-level channel failure (timeout or
+environment) the remaining LUnit directories are skipped so one wedging CLI call cannot
+eat the job budget. Reports already produced are kept, the summary still prints every
+recorded channel, and the exit code stays the most-severe outcome. A real test RED
+never aborts early.
+
+## 9. Known pinned driver defects
+
+The suites pin six classes of measured driver defects as current behavior, each with a
+KNOWN DRIVER BUG note and a flip-back comment (the drivers themselves were not
+modified). They are tracked as issues #95-#100: the shared autozero `"once"` and the
+LS155/LSM81 quoted-token branch fallthroughs, the LSM81 `Sqaure` label, the Lock-in
+Amplifier `auto-phase` key claiming three booleans, the Controller-chain legacy
+`wait-for` alias, and the recorded modal/unreachable coverage gaps. Fixing a driver
+means flipping the corresponding pinned expectations in the affected suites.
