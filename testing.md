@@ -175,12 +175,19 @@ eat the job budget. Reports already produced are kept, the summary still prints 
 recorded channel, and the exit code stays the most-severe outcome. A real test RED
 never aborts early.
 
-## 9. Known pinned driver defects
+## 9. Driver defect ledger
 
-The suites pin six classes of measured driver defects as current behavior, each with a
-KNOWN DRIVER BUG note and a flip-back comment (the drivers themselves were not
-modified). They are tracked as issues #95-#100: the shared autozero `"once"` and the
-LS155/LSM81 quoted-token branch fallthroughs, the LSM81 `Sqaure` label, the Lock-in
-Amplifier `auto-phase` key claiming three booleans, the Controller-chain legacy
-`wait-for` alias, and the recorded modal/unreachable coverage gaps. Fixing a driver
-means flipping the corresponding pinned expectations in the affected suites.
+Four of the six recorded driver defect classes were fixed on 2026-10-25 (issues
+#95-#98, all closed): the shared SourceMeter autozero `"once"` branch, the LS155
+shape `"ac"` branch, the LSM81 shape/amplitude-type branches plus the misspelled
+`Sqaure` label, and the Lock-in Amplifier `auto-phase` key that claimed the
+auto-gain/auto-reserve booleans. Each fix rewrote the offending string-case label
+or key constant in place inside the parser VI; the affected suites' pinned
+expectations were flipped back to the correct behavior and are green on every
+lane, so the suites now assert actual driver behavior rather than measured
+fallbacks.
+
+Still open from the original ledger: the Controller-chain legacy `wait-for`
+alias question (#99, an owner decision on compatibility behavior) and the
+recorded modal/unreachable coverage gaps (#100, kept in the integrity baseline;
+deletion is a separate owner decision).
